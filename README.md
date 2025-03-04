@@ -90,7 +90,7 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghi�
 > * Sử dụng `ojdbc8.jar`
 
 ## Hướng dẫn cài đặt chương trình
-> * **Bước 1:** Clone project [Java_Project_RestaurantMS](https://github.com/VietNguyen2003-UIT/Java_Project_RestaurantMS)
+> * **Bước 1:** Clone project [Java_Project_RestaurantMS](https://github.com/duongduylong/l-p-tr-nh-java.git)
 > * **Bước 2:** Vào Netbeans chọn Open project và mở project vừa clone về.
 > * **Bước 3:** Thêm tất cả các thư viện cần thiết trong mục src/External_Library.
 > * **Bước 4:** Trong src/DataBase có file Database.sql. Tiến hành vào Oracle tạo user mới với Username là `Doan` và Password là `123`, sau đó chạy toàn bộ file Database.sql.
