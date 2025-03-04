@@ -35,17 +35,27 @@ public class ServiceUser {
         PreparedStatement p=con.prepareStatement(sql);
         p.setString(1, login.getEmail());
         p.setString(2, login.getPassword());
+        System.out.println("Email: " + login.getEmail());
+        System.out.println("Password: " + login.getPassword());
+
         ResultSet r= p.executeQuery();
-        if(r.next()){
-            int UserID=r.getInt("ID_ND");
-            String email=r.getString("Email");
-            String password=r.getString("Matkhau");
-            String role=r.getString("Vaitro");
-            user=new ModelNguoiDung(UserID,email,password,role);
+        if (r.next()) {
+        int UserID = r.getInt("ID_ND");
+        String email = r.getString("Email");
+        String password = r.getString("Matkhau");
+        String role = r.getString("Vaitro");
+        user = new ModelNguoiDung(UserID, email, password, role);
+        System.out.println("User found: " + user);  // In thông tin người dùng để kiểm tra
+        } 
+        else {
+            System.out.println("No user found with the given email and password.");
         }
+        
         r.close();
         p.close();
+        
         return user;
+        
     }
     /*
         Phần đăng ký chỉ dành cho khách hàng, sau khi đăng ký thành công:

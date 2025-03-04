@@ -581,18 +581,11 @@ END;
 CREATE OR REPLACE TRIGGER Tg_Kho_ThemNL
 AFTER INSERT ON NguyenLieu
 FOR EACH ROW
-DECLARE 
-    v_count number;
 BEGIN
-    SELECT COUNT(*)
-    INTO v_count
-    FROM NguyenLieu
-    WHERE ID_NL=:new.ID_NL;
-    IF(v_count=0) THEN
-        INSERT INTO Kho(ID_NL) VALUES(:new.ID_NL);
-    END IF;
+    INSERT INTO Kho(ID_NL) VALUES(:new.ID_NL);
 END;
 /
+
 --Procedure
 --Procudure them mot khach hang moi voi cac thong tin tenKH , NgayTG va ID_ND
 CREATE OR REPLACE PROCEDURE KH_ThemKH(tenKH KHACHHANG.TenKH%TYPE, NgayTG KHACHHANG.Ngaythamgia%TYPE,
@@ -901,7 +894,7 @@ BEGIN
     SELECT COUNT(ID_KH)
     INTO v_count;
     FROM KHACHHANG
-    WHERE EXTRACT(MONTH FROM Ngaythamgia)=thang AND EXTRACT(YEAR FROM Ngaythamgia)
+    WHERE EXTRACT(MONTH FROM Ngaythamgia)=thang AND EXTRACT(YEAR FROM Ngaythamgia) = nam
     AND EXISTS(SELECT *
                FROM HOADON 
                WHERE HOADON.ID_KH=KHACHHANG.ID_KH AND TONGTIEN>trigiaHD

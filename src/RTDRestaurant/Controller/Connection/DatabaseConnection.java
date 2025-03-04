@@ -25,9 +25,10 @@ public class DatabaseConnection {
     //Thực hiện kết nối tới Database
     public void connectToDatabase() throws SQLException {
         final String url = "jdbc:oracle:thin:@localhost:1521:orcl";
-        final String username = "Doan";
+        final String username = "C##Doan";
         final String password = "123";
         connection = DriverManager.getConnection(url, username, password);
+        if(connection!=null)System.out.println("Ket noi db thanh cong");
     }
  
     public Connection getConnection() {

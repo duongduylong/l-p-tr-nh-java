@@ -1,17 +1,19 @@
 package RTDRestaurant.View.Form.Staff_Form.Admin;
 
-import EasyXLS.Constants.DataType;
-import EasyXLS.ExcelDocument;
-import EasyXLS.ExcelTable;
-import EasyXLS.ExcelWorksheet;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import RTDRestaurant.Controller.Service.ServiceAdmin;
 import RTDRestaurant.Model.ModelHoaDon;
 import RTDRestaurant.View.Dialog.MS_Success;
 import RTDRestaurant.View.Form.MainForm;
 import RTDRestaurant.View.Main_Frame.Main_Admin_Frame;
 import RTDRestaurant.View.Swing.CustomScrollBar.ScrollBarCustom;
+
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -299,30 +301,49 @@ public class BillStatistic_Form extends javax.swing.JPanel {
     private void cmdExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdExcelActionPerformed
         //Xuất danh sách Hóa Đơn ra file Excel
         try {
-            ExcelDocument workbook = new ExcelDocument(1);
-            workbook.easy_getSheetAt(0).setSheetName("Danh sách Hóa Đơn");
-            ExcelTable xlsTable = ((ExcelWorksheet) workbook.easy_getSheetAt(0)).easy_getExcelTable();
-            //Them data cho header
+            Workbook workbook = new XSSFWorkbook();  // Tạo workbook Excel
+            Sheet sheet = workbook.createSheet("Danh sách Hóa Đơn"); // Tạo sheet
+
             DefaultTableModel model = (DefaultTableModel) tableHD.getModel();
-            for (int col = 0; col < model.getColumnCount(); col++) {
-                xlsTable.easy_getCell(0, col).setValue(model.getColumnName(col));
-                xlsTable.easy_getCell(0, col).setDataType(DataType.STRING);
-                xlsTable.easy_getCell(0, col).setBold(true);
+            int rowCount = model.getRowCount();
+            int colCount = model.getColumnCount();
+
+            // Thêm tiêu đề cột (Header)
+            Row headerRow = sheet.createRow(0);
+            for (int col = 0; col < colCount; col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(model.getColumnName(col)); // Tên cột
+                CellStyle style = workbook.createCellStyle();
+                Font font = workbook.createFont();
+                font.setBold(true);
+                style.setFont(font);
+                cell.setCellStyle(style);
             }
-            //Thêm data cho bảng
-            for (int row = 0; row < model.getRowCount(); row++) {
-                for (int col = 0; col < model.getColumnCount(); col++) {
-                    xlsTable.easy_getCell(row+1, col).setValue(model.getValueAt(row, col)+"");
-                    xlsTable.easy_getCell(row+1, col).setDataType(DataType.STRING);
+
+            // Thêm dữ liệu từ bảng vào Excel
+            for (int row = 0; row < rowCount; row++) {
+                Row excelRow = sheet.createRow(row + 1);
+                for (int col = 0; col < colCount; col++) {
+                    Cell cell = excelRow.createCell(col);
+                    Object value = model.getValueAt(row, col);
+                    cell.setCellValue(value != null ? value.toString() : ""); // Gán dữ liệu
                 }
             }
-            workbook.easy_WriteXLSXFile(".\\src\\ExportFile_Excel\\DanhsachHoaDon_" + simpleDateFormat.format(new Date()) + ".xlsx");
-            File file=new File("src\\ExportFile_Excel\\DanhsachHoaDon_" + simpleDateFormat.format(new Date()) + ".xlsx");
-            String path=file.getAbsolutePath();
+
+            // Lưu file Excel
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String filePath = "src/ExportFile_Excel/DanhsachHoaDon_" + simpleDateFormat.format(new Date()) + ".xlsx";
+            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                workbook.write(fileOut);
+            }
+            workbook.close(); // Đóng workbook
+
+            File file = new File(filePath);
+            String path = file.getAbsolutePath();
             System.out.println(path);
             obj.ExportFileSuccess(path);
-            workbook.Dispose();
-        } catch (Exception e) {
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }//GEN-LAST:event_cmdExcelActionPerformed
